@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  web1:
+    image: nginx:alpine
+    container_name: web1
+    volumes:
+      - ./web1:/usr/share/nginx/html:ro
+    networks:
+      - webnet
+
+  web2:
+    image: nginx:alpine
+    container_name: web2
+    volumes:
+      - ./web2:/usr/share/nginx/html:ro
+    networks:
+      - webnet
+
+  web3:
+    image: nginx:alpine
+    container_name: web3
+    volumes:
+      - ./web3:/usr/share/nginx/html:ro
+    networks:
+      - webnet
+
+  loadbalancer:
+    image: nginx:alpine
+    container_name: loadbalancer
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx-lb.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - web1
+      - web2
+      - web3
+    networks:
+      - webnet
+
+networks:
+  webnet:
+    driver: bridge
